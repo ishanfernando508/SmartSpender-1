@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/constants/colors.dart';
+import 'package:my_app/screens/main_screen.dart';
+import 'package:my_app/services/user_service.dart';
 import 'package:my_app/widgets/custom_button.dart';
 
 class UserDataScreen extends StatefulWidget {
@@ -177,7 +179,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
 
                   //submit button
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async{
                       if(_formKey.currentState!.validate()){
 
                         //form is valid, process data
@@ -186,7 +188,23 @@ class _UserDataScreenState extends State<UserDataScreen> {
                         String password = _passwordController.text;
                         String conformPassword = _conformPasswordController.text;
 
-                        print("$userName $email $password $conformPassword");
+                        //save the user name and email in the device storage
+                        await userServices.storeUserDetails(
+                          userName: userName, 
+                          email: email, 
+                          password: password, 
+                          conformPassword: conformPassword, 
+                          context: context,
+                          );
+
+                          //navigate to the main screen
+                          Navigator.push(context, MaterialPageRoute(builder:
+                           (context) {
+                            return const MainScreen();
+                          },
+                          ),
+                          );
+                       
                       
                       }
                     },
