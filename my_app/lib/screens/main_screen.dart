@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/constants/colors.dart';
 import 'package:my_app/models/expense_model.dart';
+import 'package:my_app/models/income_model.dart';
 import 'package:my_app/screens/Transaction_screen.dart';
 import 'package:my_app/screens/add_new_screen.dart';
 import 'package:my_app/screens/budget_screen.dart';
 import 'package:my_app/screens/home_screen.dart';
 import 'package:my_app/screens/profile_screen.dart';
 import 'package:my_app/services/expense_services.dart';
+import 'package:my_app/services/income_services.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -20,8 +22,9 @@ class _MainScreenState extends State<MainScreen> {
   int _currentPageIndex =0;
 
   List<Expense> expenseList = [];
+  List<Income> incomeList = [];
 
-  //funtion tofetch expenses
+  //funtion to fetch expenses
 void fetchAllExpenses()async{
   List<Expense>loadedExpenses = await ExpenseServices().loadExpenses();
   setState(() {
@@ -29,18 +32,44 @@ void fetchAllExpenses()async{
   });
 }
 
+//funtion to fetch all incomes
+void fetchAllIncomes()async{
+  List<Income>loadeIncomes = await IncomeServices().loadIncomes();
+  setState(() {
+    incomeList = loadeIncomes;
+  });
+}
+
+//funtion to add a new expenses
+  void addNewExpenses (Expense newExpenses){
+    ExpenseServices().saveExpenses(newExpenses, context);
+
+    //update the list of expensesse
+    setState(() {
+      expenseList.add(newExpenses);
+    });
+  }
+
+  //funtion to add new income 
+  void addNewIncome (Income newIncome){
+    IncomeServices().saveIncome(newIncome, BuildContext);
+
+    //update the income list
+    setState(() {
+      incomeList.add(newIncome);
+      print(incomeList.length);
+    });
+  }
+
 @override
   void initState() {
     super.initState();
     setState(() {
       fetchAllExpenses();
+      fetchAllIncomes();
     });
   }
-
-  //funtion to add a new expenses
-  void addNewExpenses (Expense nemExpenses){
-    ExpenseServices().saveExpenses(nemExpenses, context);
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +79,8 @@ void fetchAllExpenses()async{
       HomeScreen(),
       TransactionScreen(),
       AddNewScreen(
-        addExpense: (p0){},
+        addExpense: addNewExpenses,
+        addIncome: addNewIncome,
       ),
       BudgetScreen(),
       ProfileScreen(),
