@@ -69,6 +69,22 @@ void fetchAllIncomes()async{
       fetchAllIncomes();
     });
   }
+
+  //functon to remove a expense
+  void removeExpense (Expense expense){
+    ExpenseServices().deleteExpense(expense.id, context);
+    setState(() {
+      expenseList.remove(expense);
+    });
+  }
+  
+  //funtion to remove an icome 
+  void removeIncome (Income income){
+    IncomeServices().deleteIncome(income.id, context);
+    setState(() {
+      incomeList.remove(income);
+    });
+  }
   
 
   @override
@@ -77,7 +93,12 @@ void fetchAllIncomes()async{
     //screens List
     final List<Widget> pages = [
       HomeScreen(),
-      TransactionScreen(),
+      TransactionScreen(
+        expensesList: expenseList,
+        incomeList: incomeList,
+        onDismissedExpense: removeExpense,
+        onDismissedIncome: removeIncome,
+      ),
       AddNewScreen(
         addExpense: addNewExpenses,
         addIncome: addNewIncome,
