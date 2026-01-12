@@ -92,7 +92,10 @@ void fetchAllIncomes()async{
 
     //screens List
     final List<Widget> pages = [
-      HomeScreen(),
+      HomeScreen(
+        expensesList: expenseList,
+        incomeList: incomeList,
+      ),
       TransactionScreen(
         expensesList: expenseList,
         incomeList: incomeList,
